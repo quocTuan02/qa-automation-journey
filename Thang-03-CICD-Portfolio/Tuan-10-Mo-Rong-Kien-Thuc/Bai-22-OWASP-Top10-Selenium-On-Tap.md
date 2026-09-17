@@ -7,10 +7,50 @@
 - Biết đọc hiểu Selenium cơ bản để không bỡ ngỡ nếu công ty dùng framework này thay vì Playwright (JD liệt kê Selenium đầu tiên trong danh sách).
 
 ## 📘 Nội dung học
-1. **OWASP Top 10** (bản mới nhất): đọc hiểu khái niệm, không cần thực hành khai thác — chỉ cần biết rủi ro là gì và vì sao tester cần quan tâm:
-   - SQL Injection, Cross-Site Scripting (XSS), Broken Authentication, Sensitive Data Exposure, Security Misconfiguration...
-2. **Tư duy test bảo mật cơ bản cho tester (không phải pentester)**: thử input bất thường vào form (`' OR '1'='1`, `<script>alert(1)</script>`) để kiểm tra ứng dụng xử lý input có an toàn tối thiểu không — đây là input validation testing, nằm trong phạm vi functional/security-aware testing của QA.
-3. **Ôn tập Selenium**: cấu trúc cơ bản (`webdriver.Chrome()`, `driver.find_element(By.ID, "...")`, `driver.get()`), so sánh nhanh với Playwright (API tương tự về ý tưởng, khác cú pháp và cách auto-wait).
+1. **OWASP Top 10** (bản mới nhất): đọc hiểu khái niệm, không cần thực hành khai thác — chỉ cần biết rủi ro là gì và vì sao tester cần quan tâm. Đây là danh sách 10 loại lỗ hổng bảo mật phổ biến/nguy hiểm nhất trên ứng dụng web, do cộng đồng OWASP tổng hợp và cập nhật định kỳ:
+   - **SQL Injection**: kẻ tấn công chèn câu lệnh SQL vào ô input để thao túng câu truy vấn thật của hệ thống. Liên hệ trực tiếp tới kiến thức SQL bạn học ở Tuần 4: nếu backend nối chuỗi SQL trực tiếp từ input người dùng (`"SELECT * FROM users WHERE username='" + input + "'"`), kẻ tấn công có thể nhập `' OR '1'='1` để bypass điều kiện đăng nhập.
+   - **Cross-Site Scripting (XSS)**: chèn đoạn script (thường là JavaScript) vào input, nếu ứng dụng hiển thị lại input đó ra trang mà không lọc, script sẽ tự chạy trên trình duyệt người khác xem trang.
+   - **Broken Authentication**: lỗ hổng trong cơ chế đăng nhập/quản lý phiên (session) — vd không giới hạn số lần đăng nhập sai, để lộ token trong URL.
+   - **Sensitive Data Exposure**: dữ liệu nhạy cảm (mật khẩu, số thẻ) không được mã hóa khi lưu trữ/truyền đi.
+   - **Security Misconfiguration**: cấu hình hệ thống sai/thiếu an toàn (vd để lộ trang debug, mật khẩu mặc định chưa đổi).
+
+   *Ví dụ liên hệ với công việc tester:* khi test tính năng "tìm kiếm sản phẩm", ngoài case functional bình thường, 1 tester có ý thức bảo mật sẽ thêm case: "nhập ký tự đặc biệt/script vào ô search, kiểm tra hệ thống không bị lỗi/không hiển thị script chạy được".
+
+2. **Tư duy test bảo mật cơ bản cho tester (không phải pentester)**: thử input bất thường vào form để kiểm tra ứng dụng xử lý input có an toàn tối thiểu không — đây là **input validation testing**, nằm trong phạm vi functional/security-aware testing của QA (khác hoàn toàn với pentest chuyên sâu, việc đó thuộc đội security).
+
+   *Ví dụ input cụ thể để thử (chỉ quan sát, không khai thác thật):*
+   ```text
+   Input test SQL Injection:   ' OR '1'='1
+   Input test SQL Injection:   admin'--
+   Input test XSS:             <script>alert('xss')</script>
+   Input test XSS:             <img src=x onerror=alert(1)>
+   ```
+   *Kết quả mong đợi (ứng dụng an toàn):* form báo lỗi "sai định dạng"/không cho submit, hoặc hiển thị input đó ra màn hình dưới dạng text thuần (không chạy script, không có ảnh vỡ kèm alert) — nếu popup `alert()` thật sự bật lên nghĩa là ứng dụng có lỗ hổng XSS.
+
+3. **Ôn tập Selenium**: Selenium là framework automation ra đời trước Playwright rất lâu, ý tưởng cốt lõi giống nhau (mở browser → tìm phần tử → thao tác → assert) nhưng cú pháp và cách chờ (wait) khác biệt: Selenium **không** tự động chờ phần tử sẵn sàng như Playwright, tester phải tự thêm `WebDriverWait` để tránh lỗi "element not found" do phần tử chưa kịp render.
+
+   *Ví dụ Selenium — cùng 1 việc (login trên saucedemo) so với Playwright ở Bài 11-12:*
+   ```python
+   from selenium import webdriver
+   from selenium.webdriver.common.by import By
+   from selenium.webdriver.support.ui import WebDriverWait
+   from selenium.webdriver.support import expected_conditions as EC
+
+   driver = webdriver.Chrome()
+   driver.get("https://www.saucedemo.com")
+
+   # Selenium không tự chờ -> phải chủ động wait trước khi thao tác
+   wait = WebDriverWait(driver, 10)
+   username_box = wait.until(EC.presence_of_element_located((By.ID, "user-name")))
+   username_box.send_keys("standard_user")
+
+   driver.find_element(By.ID, "password").send_keys("secret_sauce")
+   driver.find_element(By.ID, "login-button").click()
+
+   assert "inventory" in driver.current_url
+   driver.quit()   # phải tự đóng driver, Selenium không tự dọn dẹp như fixture "page" của pytest-playwright
+   ```
+   So với đoạn Playwright tương ứng ở Bài 12 (`page.get_by_placeholder(...).fill(...)` + `expect(...)` tự retry), có thể thấy Selenium cần nhiều dòng chờ thủ công hơn và phải tự quản lý vòng đời driver.
 
 ## 📚 Tài liệu tham khảo
 - [OWASP Top 10 – trang chính thức](https://owasp.org/www-project-top-ten/)

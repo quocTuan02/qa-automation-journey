@@ -6,10 +6,41 @@
 - Thực hiện được hành động trên trang web và **khẳng định (assert)** kết quả đúng như mong đợi — đây chính là bản chất của 1 test tự động.
 
 ## 📘 Nội dung học
-1. **Actions**: `.click()`, `.fill()`, `.check()/.uncheck()`, `.select_option()`, `.hover()`, `.press()`.
-2. **Assertions của Playwright (`expect`)**: `expect(locator).to_be_visible()`, `.to_have_text()`, `.to_have_value()`, `.to_be_checked()` — khác gì với `assert` thường của Python (auto-retry).
-3. **Wait strategies**: vì sao Playwright tự động chờ phần tử sẵn sàng (auto-waiting) — không cần `time.sleep()` như Selenium cũ; khi nào vẫn cần chờ thủ công (`page.wait_for_selector`, `page.wait_for_load_state`).
-4. **Chạy nhiều trình duyệt**: chạy test trên Chromium/Firefox/WebKit, chế độ headless vs có giao diện.
+1. **Actions**: là các hành động mô phỏng thao tác của người dùng thật lên phần tử đã tìm được bằng locator (Bài 11). Mỗi action tương ứng 1 hành vi cụ thể: gõ chữ, click chuột, tick checkbox, chọn dropdown...
+
+   ```python
+   page.get_by_placeholder("Username").fill("standard_user")   # gõ chữ vào ô input
+   page.get_by_placeholder("Password").fill("secret_sauce")
+   page.get_by_text("Login").click()                            # click nút
+   page.locator("#add-to-cart-sauce-labs-backpack").click()      # click nút thêm giỏ hàng
+   page.locator("select[data-test='product_sort_container']").select_option("lohi")  # chọn dropdown
+   page.get_by_role("checkbox").check()                          # tick checkbox
+   ```
+
+2. **Assertions của Playwright (`expect`)**: dùng để "khẳng định" trạng thái thực tế trên trang đúng như mong đợi — đây chính là bước quyết định test PASS hay FAIL. Khác với `assert` thường của Python (kiểm tra ngay lập tức, giá trị đã cố định), `expect()` của Playwright tự động **retry** trong vài giây — rất hợp với web vì phần tử có thể xuất hiện chậm 1 chút do gọi API/render.
+
+   ```python
+   from playwright.sync_api import expect
+
+   page.get_by_text("Login").click()
+   expect(page.locator(".title")).to_have_text("Products")      # đợi & so khớp text
+   expect(page.locator(".shopping_cart_badge")).to_be_visible() # đợi phần tử hiện ra
+   expect(page.get_by_placeholder("Username")).to_have_value("standard_user")
+   ```
+
+3. **Wait strategies**: Playwright tự "chờ" phần tử sẵn sàng (đã render, không bị che, có thể click được) trước khi thực hiện action — gọi là **auto-waiting**. Nhờ vậy hầu như không bao giờ cần `time.sleep()` (cách làm cũ, không đáng tin cậy vì chờ 1 khoảng thời gian cố định dù trang xong sớm hay muộn). Chỉ cần chờ thủ công trong vài tình huống đặc biệt (chờ 1 request mạng, chờ trang load xong hẳn):
+
+   ```python
+   page.wait_for_load_state("networkidle")   # chờ trang hết gọi API ngầm
+   page.wait_for_selector(".loading-spinner", state="hidden")  # chờ spinner biến mất
+   ```
+
+4. **Chạy nhiều trình duyệt**: Playwright hỗ trợ chạy cùng 1 test trên Chromium, Firefox, WebKit (engine của Safari) mà không cần sửa code — hữu ích để phát hiện lỗi chỉ xảy ra trên 1 trình duyệt cụ thể. Chế độ **headless** (không hiện giao diện, chạy nhanh, dùng khi chạy hàng loạt/CI) khác **headed** (có giao diện, dùng khi debug bằng mắt).
+
+   ```python
+   browser = p.chromium.launch(headless=True)   # chạy ẩn, nhanh — dùng khi CI/CD
+   browser = p.firefox.launch(headless=False)   # chạy có giao diện trên Firefox — dùng khi debug
+   ```
 
 ## 📚 Tài liệu tham khảo
 - [Playwright Docs – Actions](https://playwright.dev/python/docs/input)

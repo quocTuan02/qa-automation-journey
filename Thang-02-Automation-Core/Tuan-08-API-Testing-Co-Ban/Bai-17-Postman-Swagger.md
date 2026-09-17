@@ -6,10 +6,58 @@
 - Test API bằng tay trước khi tự động hóa — JD yêu cầu rõ *"có kinh nghiệm kiểm thử API"* và *"thực hiện kiểm thử API bằng các công cụ như Postman hoặc Swagger"*.
 
 ## 📘 Nội dung học
-1. **Kiến thức HTTP/REST cơ bản**: method (`GET/POST/PUT/PATCH/DELETE`), status code (`2xx/4xx/5xx` nghĩa là gì), header, body (JSON), query param vs path param.
-2. **Postman**: tạo request, tạo **Collection**, dùng **Environment variable** (vd `{{base_url}}`) để tái sử dụng giữa các môi trường (dev/staging).
-3. **Postman Tests tab**: viết assertion đơn giản bằng JavaScript có sẵn (`pm.test(...)`, `pm.response.to.have.status(200)`).
-4. **Đọc tài liệu Swagger/OpenAPI**: hiểu request schema, response schema, các trường bắt buộc — kỹ năng đọc hiểu API contract trước khi viết test.
+1. **Kiến thức HTTP/REST cơ bản**: mỗi API là 1 "địa chỉ" (URL) mà client gọi tới theo 1 **method** thể hiện ý định (lấy dữ liệu, tạo mới, sửa, xóa...), server trả về **status code** cho biết kết quả, và **body** (thường là JSON) chứa dữ liệu thật.
+   - `GET` = lấy dữ liệu, `POST` = tạo mới, `PUT`/`PATCH` = sửa, `DELETE` = xóa.
+   - `2xx` = thành công (`200 OK`, `201 Created`), `4xx` = lỗi do client (`400 Bad Request`, `401 Unauthorized`, `404 Not Found`), `5xx` = lỗi do server (`500 Internal Server Error`).
+   - **Query param**: tham số gắn sau dấu `?` trong URL (vd `?page=2`). **Path param**: tham số nằm ngay trong đường dẫn (vd `/api/users/2`, số `2` là path param).
+
+   *Ví dụ minh họa:*
+   ```text
+   GET https://reqres.in/api/users?page=2        <- query param "page"
+   GET https://reqres.in/api/users/2              <- path param "2" (id của user)
+   POST https://reqres.in/api/users               <- tạo user mới, dữ liệu nằm trong body JSON
+   ```
+
+2. **Postman**: tạo 1 request bằng cách chọn method + gõ URL + bấm Send; nhóm nhiều request liên quan vào 1 **Collection** (vd Collection "User API" gồm các request GET/POST/PUT/DELETE user); dùng **Environment variable** để không phải sửa tay URL khi đổi môi trường test (dev/staging/production).
+
+   *Ví dụ:* tạo Environment "Dev" với biến `base_url = https://reqres.in`, sau đó mọi request trong Collection viết là:
+   ```text
+   GET {{base_url}}/api/users?page=2
+   ```
+   Khi đổi sang môi trường khác, chỉ cần đổi giá trị `base_url` trong Environment, không phải sửa từng request.
+
+3. **Postman Tests tab**: mỗi request có thể gắn kèm 1 đoạn script JavaScript chạy tự động sau khi nhận response, dùng để tự động kiểm tra (assert) kết quả trả về thay vì nhìn bằng mắt.
+
+   ```javascript
+   // Viết trong tab "Tests" của request GET /api/users?page=2
+   pm.test("Status code la 200", function () {
+       pm.response.to.have.status(200);
+   });
+
+   pm.test("Response co field data la mang", function () {
+       const jsonData = pm.response.json();
+       pm.expect(jsonData.data).to.be.an('array');
+   });
+
+   pm.test("Response time duoi 1000ms", function () {
+       pm.expect(pm.response.responseTime).to.be.below(1000);
+   });
+   ```
+   Sau khi bấm Send, tab "Test Results" sẽ hiện rõ từng assertion PASS ✅ hay FAIL ❌.
+
+4. **Đọc tài liệu Swagger/OpenAPI**: Swagger UI hiển thị trực quan toàn bộ endpoint của 1 API — mỗi endpoint liệt kê rõ: field nào bắt buộc, kiểu dữ liệu, response mẫu — giúp bạn biết chính xác cần gửi gì và mong đợi nhận lại gì **trước khi** viết bất kỳ test nào.
+
+   *Ví dụ đọc docs endpoint `POST /pet` trên Swagger Petstore:*
+   ```json
+   // Request body mẫu Swagger cung cấp
+   {
+     "id": 0,
+     "name": "doggie",        // field bắt buộc (required), kiểu string
+     "photoUrls": ["string"], // field bắt buộc, kiểu array of string
+     "status": "available"    // enum: available | pending | sold
+   }
+   ```
+   Từ đây bạn biết ngay: nếu test thiếu field `name` hoặc `photoUrls`, API phải trả lỗi `400` — đó chính là 1 test case cần viết.
 
 ## 📚 Tài liệu tham khảo
 - [Postman Learning Center – Getting Started](https://learning.postman.com/docs/getting-started/overview/)
