@@ -23,26 +23,26 @@ Lộ trình này được thiết kế riêng cho người đã có nền tảng
 ### Tháng 1 — Nền tảng (`Thang-01-Nen-tang/`)
 | Tuần | Chủ đề | Bài học |
 |---|---|---|
-| 1 | Python cơ bản | Biến/kiểu dữ liệu/toán tử → Điều kiện/vòng lặp → Hàm |
-| 2 | Python trung cấp + OOP | List/Dict/String nâng cao → Class/Object (OOP) → Exception/File I-O |
-| 3 | Git & môi trường làm việc | Git/GitHub cơ bản → VSCode/venv/pip |
-| 4 | SQL nâng cao cho tester | JOIN/GROUP BY/HAVING → Subquery/Aggregate/CASE WHEN |
+| 1 | Python cơ bản | [Bài 01: Biến, kiểu dữ liệu, toán tử](Thang-01-Nen-tang/Tuan-01-Python-Co-Ban/Bai-01-Cai-Dat-Bien-Kieu-Du-Lieu-Toan-Tu.md)<br>[Bài 02: Điều kiện & vòng lặp](Thang-01-Nen-tang/Tuan-01-Python-Co-Ban/Bai-02-Dieu-Kien-Vong-Lap.md)<br>[Bài 03: Hàm (function)](Thang-01-Nen-tang/Tuan-01-Python-Co-Ban/Bai-03-Ham-Function.md) |
+| 2 | Python trung cấp + OOP | [Bài 04: List/Dict/String nâng cao](Thang-01-Nen-tang/Tuan-02-Python-OOP/Bai-04-List-Dict-String-Nang-Cao.md)<br>[Bài 05: OOP — Class/Object](Thang-01-Nen-tang/Tuan-02-Python-OOP/Bai-05-OOP-Class-Object.md)<br>[Bài 06: Exception & File I/O](Thang-01-Nen-tang/Tuan-02-Python-OOP/Bai-06-Exception-File-IO.md) |
+| 3 | Git & môi trường làm việc | [Bài 07: Git & GitHub cơ bản](Thang-01-Nen-tang/Tuan-03-Git-Moi-Truong/Bai-07-Git-GitHub-Co-Ban.md)<br>[Bài 08: VSCode/venv/pip](Thang-01-Nen-tang/Tuan-03-Git-Moi-Truong/Bai-08-VSCode-Venv-Pip.md) |
+| 4 | SQL nâng cao cho tester | [Bài 09: JOIN/GROUP BY/HAVING](Thang-01-Nen-tang/Tuan-04-SQL-Nang-Cao/Bai-09-Join-Group-By-Having.md)<br>[Bài 10: Subquery/Aggregate/CASE WHEN](Thang-01-Nen-tang/Tuan-04-SQL-Nang-Cao/Bai-10-Subquery-Aggregate-Case-When.md) |
 
 ### Tháng 2 — Automation Core (`Thang-02-Automation-Core/`)
 | Tuần | Chủ đề | Bài học |
 |---|---|---|
-| 5 | Playwright cơ bản | Cài đặt + Locator → Actions/Assertions/Wait |
-| 6 | Pytest + Playwright | Cấu trúc Pytest/Fixture → Parametrize/Setup-Teardown |
-| 7 | Page Object Model | Khái niệm POM + refactor → Test report (pytest-html/Allure) |
-| 8 | API Testing cơ bản | Postman/Swagger → Requests library + Pytest |
+| 5 | Playwright cơ bản | [Bài 11: Cài đặt Playwright + Locator](Thang-02-Automation-Core/Tuan-05-Playwright-Co-Ban/Bai-11-Cai-Dat-Playwright-Locator.md)<br>[Bài 12: Actions/Assertions/Wait](Thang-02-Automation-Core/Tuan-05-Playwright-Co-Ban/Bai-12-Actions-Assertions-Wait.md) |
+| 6 | Pytest + Playwright | [Bài 13: Cấu trúc Pytest/Fixture](Thang-02-Automation-Core/Tuan-06-Pytest-Playwright/Bai-13-Cau-Truc-Pytest-Fixture.md)<br>[Bài 14: Parametrize/Setup-Teardown](Thang-02-Automation-Core/Tuan-06-Pytest-Playwright/Bai-14-Parametrize-Setup-Teardown.md) |
+| 7 | Page Object Model | [Bài 15: Khái niệm POM + refactor](Thang-02-Automation-Core/Tuan-07-Page-Object-Model/Bai-15-POM-Concept-Refactor.md)<br>[Bài 16: Test report (pytest-html/Allure)](Thang-02-Automation-Core/Tuan-07-Page-Object-Model/Bai-16-Test-Report-Pytest-Html-Allure.md) |
+| 8 | API Testing cơ bản | [Bài 17: Postman/Swagger](Thang-02-Automation-Core/Tuan-08-API-Testing-Co-Ban/Bai-17-Postman-Swagger.md)<br>[Bài 18: Requests library + Pytest](Thang-02-Automation-Core/Tuan-08-API-Testing-Co-Ban/Bai-18-Requests-Library-Pytest.md) |
 
 ### Tháng 3 — CI/CD & Portfolio (`Thang-03-CICD-Portfolio/`)
 | Tuần | Chủ đề | Bài học |
 |---|---|---|
-| 9 | CI/CD với GitHub Actions | Khái niệm CI/CD + YAML → Workflow + report artifact |
-| 10 | Mở rộng kiến thức | JMeter/performance testing → OWASP Top 10 + ôn tập Selenium |
-| 11 | Portfolio Project | Xây dựng project hoàn chỉnh (UI + API + CI/CD) |
-| 12 | Ôn tập & phỏng vấn | Ôn tập tổng hợp + luyện phỏng vấn theo JD |
+| 9 | CI/CD với GitHub Actions | [Bài 19: Khái niệm CI/CD + YAML](Thang-03-CICD-Portfolio/Tuan-09-CICD-GitHub-Actions/Bai-19-CICD-Concept-Yaml.md)<br>[Bài 20: Workflow + report artifact](Thang-03-CICD-Portfolio/Tuan-09-CICD-GitHub-Actions/Bai-20-Workflow-Report-Artifact.md) |
+| 10 | Mở rộng kiến thức | [Bài 21: JMeter/performance testing](Thang-03-CICD-Portfolio/Tuan-10-Mo-Rong-Kien-Thuc/Bai-21-JMeter-Performance-Testing.md)<br>[Bài 22: OWASP Top 10 + ôn tập Selenium](Thang-03-CICD-Portfolio/Tuan-10-Mo-Rong-Kien-Thuc/Bai-22-OWASP-Top10-Selenium-On-Tap.md) |
+| 11 | Portfolio Project | [Bài 23: Xây dựng portfolio project](Thang-03-CICD-Portfolio/Tuan-11-Portfolio-Project/Bai-23-Xay-Dung-Portfolio-Project.md) |
+| 12 | Ôn tập & phỏng vấn | [Bài 24: Ôn tập tổng hợp + luyện phỏng vấn](Thang-03-CICD-Portfolio/Tuan-12-On-Tap-Phong-Van/Bai-24-On-Tap-Tong-Hop-Phong-Van.md) |
 
 ## Bảng theo dõi tiến độ
 
